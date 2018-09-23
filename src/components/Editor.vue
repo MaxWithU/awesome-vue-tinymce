@@ -1,36 +1,25 @@
 <template>
-    <textarea :id= "Id"></textarea>
+    <textarea :id= "id"></textarea>
 </template>
 <script>
-  import tinymce from 'tinymce'; 
+  import tinymce from 'tinymce/tinymce';
   export default {
     data () {
       return {
         instance: [],
+        setContent: () => {},
         Editor: null,
         DefaultConfig: {
           // GLOBAL
-          height: 500,
-          theme: 'modern',
           skin: false,
           menubar: false,
-          toolbar: `styleselect | fontselect | formatselect | fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image  media | table | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | preview removeformat  hr | paste code  link | undo redo | fullscreen `,
-          plugins: '',
           // CONFIG
           forced_root_block: 'p',
           force_p_newlines: true,
           importcss_append: true,
-          // CONFIG: ContentStyle 这块很重要， 在最后呈现的页面也要写入这个基本样式保证前后一致， `table`和`img`的问题基本就靠这个来填坑了
           content_style: `
             *                         { padding:0; margin:0; }
             html, body                { height:100%; }
-            img                       { max-width:100%; display:block;height:auto; }
-            a                         { text-decoration: none; }
-            iframe                    { width: 100%; }
-            p                         { line-height:1.6; margin: 0px; }
-            table                     { word-wrap:break-word; word-break:break-all; max-width:100%; border:none; border-color:#999; }
-            .mce-object-iframe        { width:100%; box-sizing:border-box; margin:0; padding:0; }
-            ul,ol                     { list-style-position:inside; }
           `,
           insert_button_items: 'image link | inserttable',
 
@@ -45,36 +34,10 @@
           paste_auto_cleanup_on_paste: false,
 
           // CONFIG: Font
-          fontsize_formats: '10px 11px 12px 14px 16px 18px 20px 24px',
+          fontsize_formats: '',
 
           // FontSelect
-          font_formats: `
-            微软雅黑=微软雅黑;
-            宋体=宋体;
-            黑体=黑体;
-            仿宋=仿宋;
-            楷体=楷体;
-            隶书=隶书;
-            幼圆=幼圆;
-            Andale Mono=andale mono,times;
-            Arial=arial, helvetica,
-            sans-serif;
-            Arial Black=arial black, avant garde;
-            Book Antiqua=book antiqua,palatino;
-            Comic Sans MS=comic sans ms,sans-serif;
-            Courier New=courier new,courier;
-            Georgia=georgia,palatino;
-            Helvetica=helvetica;
-            Impact=impact,chicago;
-            Symbol=symbol;
-            Tahoma=tahoma,arial,helvetica,sans-serif;
-            Terminal=terminal,monaco;
-            Times New Roman=times new roman,times;
-            Trebuchet MS=trebuchet ms,geneva;
-            Verdana=verdana,geneva;
-            Webdings=webdings;
-            Wingdings=wingdings,zapf dingbats`,
-
+          font_formats: '',
           // Tab
           tabfocus_elements: ':prev,:next',
           object_resizing: true,
@@ -85,7 +48,19 @@
       }
     },
     props: {
-      Id: {
+      height: {
+        type: Number,
+        default: 500
+      },
+      id: {
+        type: String
+      },
+      toolbar: {
+        default: `styleselect | fontselect | formatselect | fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image  media | table | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | preview removeformat  hr | paste code  link | undo redo | fullscreen `,
+        type: String
+      },
+      plugins: {
+        default: '',
         type: String
       },
       value: {
@@ -131,9 +106,7 @@
     methods: {
        init () {
         const self = this
-        
         this.Editor = tinymce.init({
-          // 默认配置
           ...this.DefaultConfig,
           
           // 图片上传
@@ -171,24 +144,34 @@
               xhr.send(formData)
             }
           },
+          
+          ...this.height,
+          ...this.toolbar,
+          ...this.plugins,
 
           // prop内传入的的config
           ...this.config, 
           
           // 挂载的DOM对象
-          selector: `#${this.Id}`,
+          selector: `#${this.id}`,
+          
           setup: (editor) => {
             // 抛出 'on-ready' 事件钩子
             editor.on(
               'init', () => {
                 self.loading = false
                 self.$emit('on-ready')
-                editor.setContent(self.value)
+                editor.setContent(self.value);
               }
             )
             // 抛出 'input' 事件钩子，同步value数据
             editor.on(
-              'input change undo redo', () => {
+              'change undo redo', () => {
+                self.$emit('input', editor.getContent())
+              }
+            )
+            editor.on(
+              'keyup', () => {
                 self.$emit('input', editor.getContent())
               }
             )

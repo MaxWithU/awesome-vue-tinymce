@@ -6,9 +6,10 @@ import nodeResolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import nodeGlobals from 'rollup-plugin-node-globals'
 import { uglify } from 'rollup-plugin-uglify'
-import livereload from 'rollup-plugin-livereload'
-import serve from 'rollup-plugin-serve'
-import replace from 'rollup-plugin-replace'
+import filesize from 'rollup-plugin-filesize';
+
+const pkg = require('./package.json')
+
 
 let plugins = [
   alias({
@@ -16,9 +17,7 @@ let plugins = [
     '@': path.resolve('./src/'),
     resolve: ['.js', '.vue']
   }),
-  vue({
-    css: './dist/assets/css/app.css'
-  }),
+  vue(),
   buble({
     objectAssign: 'Object.assign'
   }),
@@ -28,44 +27,23 @@ let plugins = [
     browser: true
   }),
   commonjs(),
-  nodeGlobals()
+  nodeGlobals(),
+  filesize(),
+  uglify()
 ]
 
 let config = {
-  input: './src/main.js',
+  
+  input: './src/components/index.js',
   output: {
+    banner: '/* awesome-vue-tinymce version ' + pkg.version + ' */\n',
+    footer: '/* awesome-vue-tinymce version ' + pkg.version + ' */',
     file: './dist/AwesomeVueTinymce.js',
-    format: 'umd',
-    sourcemap: true
+    format: ['umd'],
+    name: 'awesome-vue-tinymce',
+    sourcemap: false
   },
+  external: ['vue', 'tinymce/tinymce'],
   plugins: plugins
 }
-
-const isProduction = process.env.NODE_ENV === `production`
-const isDevelopment = process.env.NODE_ENV === `development`
-
-if (isProduction) {
-  config.input='./src/components/index.js'
-  config.external = ['vue']
-  config.output.name="bundle"
-  config.output.sourcemap = false
-  config.plugins.push(
-    replace({
-      'process.env.NODE_ENV': JSON.stringify('production')
-    })
-  )
-  // config.plugins.push(uglify())
-}
-
-if (isDevelopment) {
-  config.plugins.push(livereload())
-  config.plugins.push(
-    serve({
-      contentBase: './dist/',
-      port: 8080,
-      open: true
-    })
-  )
-}
-
 export default config

@@ -1,2 +1,2 @@
-import TinymceEditor from './Editor.vue'
-export default TinymceEditor;
+import AwesomeVueTinymce from './Editor.vue'
+export default AwesomeVueTinymce;
