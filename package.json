@@ -1,6 +1,6 @@
 {
   "name": "awesome-vue-tinymce",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A WYSWYG Editor from vue",
   "author": "maxwithu <csl199254@gmail.com>",
   "main": "dist/AwesomeVueTinymce.js",
