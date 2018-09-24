@@ -15,6 +15,9 @@
   import 'tinymce/themes/modern/theme';
   import 'tinymce/skins/lightgray/skin.min.css';
   import 'tinymce/skins/lightgray/content.min.css';
+  // import './custom/skin.min.css';
+  // import './custom/content.min.css';
+    
   export default {
     name: 'app',
     components: { AwesomeVueTinymce },

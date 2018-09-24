@@ -1,6 +1,6 @@
 {
   "name": "awesome-vue-tinymce",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A WYSWYG Editor from vue",
   "author": "maxwithu <csl199254@gmail.com>",
   "main": "dist/AwesomeVueTinymce.js",
@@ -9,11 +9,9 @@
     "build": "rollup -c",
     "start": "vue serve src/App.vue"
   },
-  "dependencies": {
-    "tinymce": "^4.8.3",
-    "vue": "^2.5.17"
-  },
   "devDependencies": {
+    "tinymce": "^4.8.3",
+    "vue": "^2.5.17",
     "autoprefixer": "^8.0.0",
     "babel-core": "^6.26.0",
     "cross-env": "^5.0.5",
