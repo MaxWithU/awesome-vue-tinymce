@@ -45,9 +45,31 @@ Without tinyMCE module, without css, make it easier & flexible
 
 ### async value
 
-
+```html
+<template>
+    <awesome-vue-tinymce
+      id="editor"
+      v-model ="value"
+      ref="editor"
+      @on-ready="ready = true"
+    />
+</template>
+<script>
+    export default {
+        methods: {
+            setValue (value) {
+                // setValue
+                this.$refs.editor.instance.forEach((item) => { 
+                    item.setContent(value)
+                })
+            }
+        }
+    }
+</script>
+```
 
 ### skin
+
 If you would like to create your own skin, [Make your skin here](http://skin.tiny.cloud/) ,then
 
 ```html
