@@ -58,7 +58,6 @@ Without tinyMCE module, without css, make it easier & flexible
     export default {
         methods: {
             setValue (value) {
-                // setValue
                 this.$refs.editor.instance.forEach((item) => { 
                     item.setContent(value)
                 })
